@@ -20,6 +20,7 @@ func handleTripPreview(w http.ResponseWriter, r *http.Request) {
 	if reqBody.UserID == "" {
 		http.Error(w, "user ID is required", http.StatusBadRequest)
 	}
+	//
 
 	jsonBody, _ := json.Marshal(reqBody)
 	reader := bytes.NewReader(jsonBody)
