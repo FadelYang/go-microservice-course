@@ -21,7 +21,6 @@ func handleTripPreview(w http.ResponseWriter, r *http.Request) {
 	if reqBody.UserID == "" {
 		http.Error(w, "user ID is required", http.StatusBadRequest)
 	}
-	//
 
 	jsonBody, _ := json.Marshal(reqBody)
 	reader := bytes.NewReader(jsonBody)
@@ -34,6 +33,7 @@ func handleTripPreview(w http.ResponseWriter, r *http.Request) {
 	defer tripSErvice.Close()
 
 	// TODO: Call trip service
+
 	resp, err := http.Post("http://trip-service:8083/preview", "application/json", reader)
 	if err != nil {
 		log.Println(err)
