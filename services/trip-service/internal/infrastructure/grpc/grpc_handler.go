@@ -8,6 +8,8 @@ import (
 	"ride-sharing/shared/types"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type gRPCHandler struct {
@@ -39,10 +41,11 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, req *pb.PreviewTripReques
 	r, err := h.service.GetRoute(ctx, pickup, destination)
 	if err != nil {
 		log.Println(err)
-		return nil, err
+		return nil, status.Errorf(codes.Internal, "failed to get route: %v", err)
 	}
 
 	return &pb.PreviewTripResponse{
-		Route: r.ToProto(),
+		Route:     r.ToProto(),
+		RideFares: []*pb.RideFare{},
 	}, nil
 }
