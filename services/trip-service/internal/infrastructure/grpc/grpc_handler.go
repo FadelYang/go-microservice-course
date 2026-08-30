@@ -49,7 +49,7 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, req *pb.PreviewTripReques
 	// 1. Extimate the ride fares prices based on the route (ex: distance).
 	estimatedFares := h.service.EstimatePackagesPriceWithRoute(r)
 	// 2. Store the ride fares for the create trip (next lesson) to fetch and validate.
-	fares, err := h.service.GenerateTripFares(ctx, estimatedFares, userID)
+	fares, err := h.service.GenerateTripFares(ctx, estimatedFares, userID, r)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to generate the ride fares: %v", err)
 	}
@@ -61,10 +61,22 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, req *pb.PreviewTripReques
 }
 
 func (h *gRPCHandler) CreateTrip(ctx context.Context, req *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
-	// 1. Fetch and validate the fare
-	// 2. Call create trip.
-	// 3. We also need to initialize an empty driver to the trip.
-	// 4. Add acomment at the end of the function to publish an event the Async Comms
+	fareID := req.GetRideFareID()
+	userID := req.GetUserID()
 
-	return nil, status.Errorf(codes.Unimplemented, "method CreateTrip not implemented")
+	rideFare, err := h.service.GetAndValidateFare(ctx, fareID, userID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to validate the fare: %v", err)
+	}
+
+	trip, err := h.service.CreateTrip(ctx, rideFare)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to create the trip: %v", err)
+	}
+
+	//  Add a comment at the end of the function to publish an event the Async Comms
+
+	return &pb.CreateTripResponse{
+		TripID: trip.ID.Hex(),
+	}, nil
 }

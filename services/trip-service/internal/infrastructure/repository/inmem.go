@@ -29,5 +29,10 @@ func (r *inmemRepository) SaveRideFare(ctx context.Context, fare *domain.RideFar
 }
 
 func (r *inmemRepository) GetRideFareByID(ctx context.Context, fareID string) (*domain.RideFareModel, error) {
-	return nil, fmt.Errorf("not implemented")
+	fare, exist := r.rideFares[fareID]
+	if !exist {
+		return nil, fmt.Errorf("fare does not exists with ID: %s", fareID)
+	}
+
+	return fare, nil
 }
