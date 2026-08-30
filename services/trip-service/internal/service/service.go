@@ -99,6 +99,17 @@ func (s *service) GenerateTripFares(ctx context.Context, rideFares []*domain.Rid
 	return fares, nil
 }
 
+func (s *service) GetAndValidateFare(ctx context.Context, fareID, userID string) (*domain.RideFareModel, error) {
+	fare, err := s.repo.GetRideFareByID(ctx, fareID)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get trip face: %w", err)
+	}
+
+	// User fare validation (is user are owner of the fare?)
+
+	return fare, nil
+}
+
 func estimateFareRoute(f *domain.RideFareModel, route *tripTypes.OsrmApiResponse) *domain.RideFareModel {
 	pricingCfg := tripTypes.DefaultPricingConfig()
 	carPackagePrice := f.TotalPriceInCents

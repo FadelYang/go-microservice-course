@@ -2,7 +2,6 @@ package grpc
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"ride-sharing/services/trip-service/internal/domain"
 	pb "ride-sharing/shared/proto/trip"
@@ -62,5 +61,10 @@ func (h *gRPCHandler) PreviewTrip(ctx context.Context, req *pb.PreviewTripReques
 }
 
 func (h *gRPCHandler) CreateTrip(ctx context.Context, req *pb.CreateTripRequest) (*pb.CreateTripResponse, error) {
-	return nil, fmt.Errorf("unimplemented function")
+	// 1. Fetch and validate the fare
+	// 2. Call create trip.
+	// 3. We also need to initialize an empty driver to the trip.
+	// 4. Add acomment at the end of the function to publish an event the Async Comms
+
+	return nil, status.Errorf(codes.Unimplemented, "method CreateTrip not implemented")
 }
